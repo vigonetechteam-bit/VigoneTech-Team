@@ -6,4 +6,6 @@ Team: Aleprogramm • LoreTnani • Alessio • AI
 
 Per tutti coloro che hanno conosciuto Open Smart OS: non esiste più, quindi non cercatelo su qualunque motore di ricerca!
 
-https://aleprogramm-bit.github.io/Vigone-Tech-Team
+https://vigonetechteam-bit.github.io/VigoneTech-Team/
+
+Il sito originale è ospitato qua, essendo stato trasferito da Aleprogramm-bit a me (LoreTnani)!
