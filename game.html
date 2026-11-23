@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<title>Snake – VigoneTech Team</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+    :root {
+        --bg: #0d0d0d;
+        --card-bg: #1a1a1a;
+        --text: #e8eaed;
+        --border: #3c4043;
+        --shadow: rgba(0, 0, 0, 0.4);
+        --primary: #8ab4f8;
+        --primary-hover: #669df6;
+        --accent: #ff5252;
+    }
+
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        background: radial-gradient(circle at top, #1e2430 0%, #0d0d0d 100%);
+        color: var(--text);
+        text-align: center;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 16px;
+        touch-action: manipulation;
+    }
+
+    h1 {
+        margin-bottom: 20px;
+        font-size: 28px;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        text-shadow: 0 2px 8px var(--shadow);
+    }
+
+    /* MENU E SEZIONI */
+    .section {
+        display: none;
+        width: 100%;
+        max-width: 360px;
+        background: var(--card-bg);
+        padding: 24px;
+        border-radius: 16px;
+        border: 1px solid var(--border);
+        box-shadow: 0 8px 24px var(--shadow);
+    }
+
+    .section.active {
+        display: block;
+    }
+
+    .section h2 {
+        margin-bottom: 16px;
+        font-size: 20px;
+    }
+
+    .btn {
+        display: block;
+        width: 100%;
+        margin: 10px 0;
+        padding: 12px;
+        background: var(--primary);
+        color: #0f172a;
+        border-radius: 10px;
+        text-decoration: none;
+        font-size: 15px;
+        font-weight: 600;
+        box-shadow: 0 4px 12px var(--shadow);
+        transition: all 0.2s ease;
+        cursor: pointer;
+        border: none;
+    }
+
+    .btn:hover {
+        background: var(--primary-hover);
+        transform: translateY(-2px);
+    }
+
+    .btn-speed {
+        background: #2a2a2a;
+        color: #fff;
+        border: 1px solid var(--border);
+    }
+
+    .btn-speed.active-speed {
+        background: var(--primary);
+        color: #0f172a;
+        border-color: transparent;
+    }
+
+    /* CANVAS E AREA GIOCO */
+    #gameContainer {
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        max-width: 400px;
+    }
+
+    .hud {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        margin-bottom: 12px;
+        padding: 10px 16px;
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        font-size: 15px;
+        font-weight: 600;
+    }
+
+    .canvas-wrapper {
+        position: relative;
+        width: 100%;
+    }
+
+    #gameCanvas {
+        background: #111;
+        border: 2px solid var(--border);
+        border-radius: 12px;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+        max-width: 100%;
+        height: auto;
+        display: block;
+    }
+
+    .back {
+        margin-top: 16px;
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--primary);
+        cursor: pointer;
+        transition: opacity 0.2s;
+    }
+
+    .back:hover {
+        opacity: 0.8;
+    }
+
+    /* CONTROLLI TOUCH MOBILE */
+    #mobileControls {
+        display: none;
+        grid-template-columns: repeat(3, 60px);
+        grid-template-rows: repeat(2, 54px);
+        gap: 8px;
+        margin-top: 16px;
+    }
+
+    .touch-btn {
+        background: #222;
+        border: 1px solid var(--border);
+        color: #fff;
+        border-radius: 10px;
+        font-size: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        user-select: none;
+        cursor: pointer;
+    }
+
+    .touch-btn:active {
+        background: var(--primary);
+        color: #111;
+    }
+
+    @media (max-width: 600px) {
+        #mobileControls {
+            display: grid;
+        }
+    }
+</style>
+</head>
+<body>
+
+<h1>Snake – VigoneTech</h1>
+
+<!-- MENU PRINCIPALE -->
+<div id="menu" class="section active">
+    <button class="btn" onclick="startGame()">Gioca</button>
+    <button class="btn" onclick="showSection('options')">Opzioni</button>
+    <button class="btn" onclick="showSection('credits')">Crediti</button>
+</div>
+
+<!-- OPZIONI -->
+<div id="options" class="section">
+    <h2>Opzioni</h2>
+    <p style="margin-bottom: 12px; font-size: 14px; color: #aaa;">Velocità del gioco:</p>
+    <button class="btn btn-speed" id="speed-140" onclick="setSpeed(140)">Lento</button>
+    <button class="btn btn-speed active-speed" id="speed-90" onclick="setSpeed(90)">Normale</button>
+    <button class="btn btn-speed" id="speed-60" onclick="setSpeed(60)">Veloce</button>
+    <div class="back" onclick="showSection('menu')">← Torna al Menu</div>
+</div>
+
+<!-- CREDITI -->
+<div id="credits" class="section">
+    <h2>Crediti</h2>
+    <p style="margin-bottom: 8px;">Sviluppato da <strong>VigoneTech Team</strong></p>
+    <p style="color: #aaa; font-size: 14px;">Programmazione: <em>LoreTnani</em></p>
+    <div class="back" onclick="showSection('menu')">← Torna al Menu</div>
+</div>
+
+<!-- AREA GIOCO -->
+<div id="gameContainer">
+    <div class="hud">
+        <span id="score">Punti: 0</span>
+        <span id="highScore">Record: 0</span>
+    </div>
+    
+    <div class="canvas-wrapper">
+        <canvas id="gameCanvas" width="400" height="400"></canvas>
+    </div>
+    
+    <!-- Controlli Mobile -->
+    <div id="mobileControls">
+        <div></div>
+        <button class="touch-btn" onclick="handleTouch('UP')">▲</button>
+        <div></div>
+        <button class="touch-btn" onclick="handleTouch('LEFT')">◄</button>
+        <button class="touch-btn" onclick="handleTouch('DOWN')">▼</button>
+        <button class="touch-btn" onclick="handleTouch('RIGHT')">►</button>
+    </div>
+
+    <div class="back" onclick="backToMenu()">Esci al Menu</div>
+</div>
+
+<script>
+const canvas = document.getElementById("gameCanvas");
+const ctx = canvas.getContext("2d");
+
+const GRID_SIZE = 20;
+const TILE_COUNT = canvas.width / GRID_SIZE;
+
+let speed = 90;
+let snake = [];
+let direction = "RIGHT";
+let nextDirection = "RIGHT";
+let food = { x: 0, y: 0 };
+let score = 0;
+let highScore = localStorage.getItem("snake_highscore") || 0;
+let gameLoop = null;
+let isPaused = false;
+let isGameOver = false;
+
+document.getElementById("highScore").innerText = "Record: " + highScore;
+document.addEventListener("keydown", keyPress);
+
+// Supporto Gesture Swipe per Mobile
+let touchStartX = 0;
+let touchStartY = 0;
+
+canvas.addEventListener('touchstart', e => {
+    touchStartX = e.changedTouches[0].screenX;
+    touchStartY = e.changedTouches[0].screenY;
+}, false);
+
+canvas.addEventListener('touchend', e => {
+    let touchEndX = e.changedTouches[0].screenX;
+    let touchEndY = e.changedTouches[0].screenY;
+    handleSwipe(touchStartX, touchStartY, touchEndX, touchEndY);
+}, false);
+
+function handleSwipe(startX, startY, endX, endY) {
+    let diffX = endX - startX;
+    let diffY = endY - startY;
+
+    if (Math.abs(diffX) > Math.abs(diffY)) {
+        if (diffX > 30 && direction !== "LEFT") nextDirection = "RIGHT";
+        else if (diffX < -30 && direction !== "RIGHT") nextDirection = "LEFT";
+    } else {
+        if (diffY > 30 && direction !== "UP") nextDirection = "DOWN";
+        else if (diffY < -30 && direction !== "DOWN") nextDirection = "UP";
+    }
+}
+
+function showSection(id) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.getElementById('gameContainer').style.display = 'none';
+    if (id) document.getElementById(id).classList.add('active');
+}
+
+function startGame() {
+    showSection(null);
+    document.getElementById("gameContainer").style.display = "flex";
+    resetGame();
+    startLoop();
+}
+
+function startLoop() {
+    if (gameLoop) clearInterval(gameLoop);
+    gameLoop = setInterval(update, speed);
+}
+
+function resetGame() {
+    snake = [
+        { x: 10 * GRID_SIZE, y: 10 * GRID_SIZE },
+        { x: 9 * GRID_SIZE, y: 10 * GRID_SIZE },
+        { x: 8 * GRID_SIZE, y: 10 * GRID_SIZE }
+    ];
+    direction = "RIGHT";
+    nextDirection = "RIGHT";
+    score = 0;
+    isPaused = false;
+    isGameOver = false;
+    updateScoreUI();
+    food = spawnFood();
+}
+
+function spawnFood() {
+    let newFood;
+    while (true) {
+        newFood = {
+            x: Math.floor(Math.random() * TILE_COUNT) * GRID_SIZE,
+            y: Math.floor(Math.random() * TILE_COUNT) * GRID_SIZE
+        };
+        const onSnake = snake.some(part => part.x === newFood.x && part.y === newFood.y);
+        if (!onSnake) break;
+    }
+    return newFood;
+}
+
+function keyPress(e) {
+    if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", " "].includes(e.key)) {
+        e.preventDefault();
+    }
+
+    if (isGameOver) {
+        if (e.key === " " || e.key === "Enter") startGame();
+        return;
+    }
+
+    if (e.key === " " || e.key.toLowerCase() === "p") {
+        isPaused = !isPaused;
+        return;
+    }
+
+    if (isPaused) return;
+
+    if ((e.key === "ArrowUp" || e.key === "w") && direction !== "DOWN") nextDirection = "UP";
+    if ((e.key === "ArrowDown" || e.key === "s") && direction !== "UP") nextDirection = "DOWN";
+    if ((e.key === "ArrowLeft" || e.key === "a") && direction !== "RIGHT") nextDirection = "LEFT";
+    if ((e.key === "ArrowRight" || e.key === "d") && direction !== "LEFT") nextDirection = "RIGHT";
+}
+
+function handleTouch(dir) {
+    if (isGameOver) {
+        startGame();
+        return;
+    }
+    if (dir === "UP" && direction !== "DOWN") nextDirection = "UP";
+    if (dir === "DOWN" && direction !== "UP") nextDirection = "DOWN";
+    if (dir === "LEFT" && direction !== "RIGHT") nextDirection = "LEFT";
+    if (dir === "RIGHT" && direction !== "LEFT") nextDirection = "RIGHT";
+}
+
+function update() {
+    if (isPaused) {
+        drawPauseScreen();
+        return;
+    }
+
+    direction = nextDirection;
+    const head = { x: snake[0].x, y: snake[0].y };
+
+    if (direction === "UP") head.y -= GRID_SIZE;
+    if (direction === "DOWN") head.y += GRID_SIZE;
+    if (direction === "LEFT") head.x -= GRID_SIZE;
+    if (direction === "RIGHT") head.x += GRID_SIZE;
+
+    // Wrap-around bordi
+    if (head.x < 0) head.x = canvas.width - GRID_SIZE;
+    if (head.x >= canvas.width) head.x = 0;
+    if (head.y < 0) head.y = canvas.height - GRID_SIZE;
+    if (head.y >= canvas.height) head.y = 0;
+
+    // Collisione con se stesso
+    if (snake.some(part => part.x === head.x && part.y === head.y)) {
+        gameOver();
+        return;
+    }
+
+    snake.unshift(head);
+
+    // Mangia cibo
+    if (head.x === food.x && head.y === food.y) {
+        score++;
+        if (score > highScore) {
+            highScore = score;
+            localStorage.setItem("snake_highscore", highScore);
+        }
+        updateScoreUI();
+        food = spawnFood();
+    } else {
+        snake.pop();
+    }
+
+    draw();
+}
+
+function updateScoreUI() {
+    document.getElementById("score").innerText = "Punti: " + score;
+    document.getElementById("highScore").innerText = "Record: " + highScore;
+}
+
+function draw() {
+    // Sfondo
+    ctx.fillStyle = "#111";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Griglia
+    ctx.strokeStyle = "#1a1a1a";
+    ctx.lineWidth = 1;
+    for (let i = 0; i <= canvas.width; i += GRID_SIZE) {
+        ctx.beginPath();
+        ctx.moveTo(i, 0); ctx.lineTo(i, canvas.height);
+        ctx.moveTo(0, i); ctx.lineTo(canvas.width, i);
+        ctx.stroke();
+    }
+
+    // Serpente
+    snake.forEach((part, index) => {
+        ctx.fillStyle = index === 0 ? "#8ab4f8" : "#4c8bf5";
+        ctx.fillRect(part.x + 1, part.y + 1, GRID_SIZE - 2, GRID_SIZE - 2);
+    });
+
+    // Cibo
+    ctx.fillStyle = "#ff5252";
+    ctx.beginPath();
+    ctx.arc(food.x + GRID_SIZE / 2, food.y + GRID_SIZE / 2, GRID_SIZE / 2 - 2, 0, Math.PI * 2);
+    ctx.fill();
+}
+
+function drawPauseScreen() {
+    ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "#fff";
+    ctx.font = "bold 24px sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText("PAUSA", canvas.width / 2, canvas.height / 2);
+}
+
+function gameOver() {
+    clearInterval(gameLoop);
+    isGameOver = true;
+
+    ctx.fillStyle = "rgba(0, 0, 0, 0.8)";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    ctx.fillStyle = "#ff5252";
+    ctx.font = "bold 28px sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText("GAME OVER", canvas.width / 2, canvas.height / 2 - 30);
+
+    ctx.fillStyle = "#fff";
+    ctx.font = "16px sans-serif";
+    ctx.fillText("Punteggio finale: " + score, canvas.width / 2, canvas.height / 2 + 10);
+
+    ctx.fillStyle = "#8ab4f8";
+    ctx.font = "14px sans-serif";
+    ctx.fillText("Premi Spazio o tocca per Riavviare", canvas.width / 2, canvas.height / 2 + 50);
+}
+
+canvas.addEventListener("click", () => {
+    if (isGameOver) startGame();
+});
+
+function backToMenu() {
+    if (gameLoop) clearInterval(gameLoop);
+    showSection('menu');
+}
+
+function setSpeed(s) {
+    speed = s;
+    document.querySelectorAll('.btn-speed').forEach(b => b.classList.remove('active-speed'));
+    document.getElementById('speed-' + s).classList.add('active-speed');
+    if (gameLoop) startLoop();
+}
+</script>
+
+</body>
+</html>

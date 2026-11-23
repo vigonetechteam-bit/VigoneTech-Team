@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Changelog di LorenzoOS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        :root {
+            --bg: #f8fafc;
+            --card-bg: rgba(255, 255, 255, 0.85);
+            --card-hover: #ffffff;
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --primary-light: rgba(37, 99, 235, 0.1);
+            --text: #0f172a;
+            --muted: #64748b;
+            --border: rgba(226, 232, 240, 0.8);
+            --radius-lg: 16px;
+            --radius-md: 10px;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.05);
+            --shadow-lg: 0 10px 25px rgba(0,0,0,0.08);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #0f172a;
+                --card-bg: rgba(30, 41, 59, 0.75);
+                --card-hover: #1e293b;
+                --primary: #60a5fa;
+                --primary-hover: #93c5fd;
+                --primary-light: rgba(96, 165, 250, 0.15);
+                --text: #f8fafc;
+                --muted: #94a3b8;
+                --border: rgba(51, 65, 85, 0.6);
+                --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+                --shadow-md: 0 4px 12px rgba(0,0,0,0.4);
+                --shadow-lg: 0 10px 25px rgba(0,0,0,0.5);
+            }
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            line-height: 1.6;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* HEADER */
+        header {
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow: var(--shadow-sm);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        header img {
+            width: 44px;
+            height: 44px;
+            border-radius: var(--radius-md);
+            object-fit: cover;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+        }
+
+        header h1 {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        header p {
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        .back-portal {
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--muted);
+            padding: 8px 14px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+            transition: all 0.2s ease;
+        }
+
+        .back-portal:hover {
+            background: var(--border);
+            color: var(--text);
+        }
+
+        /* PAGE LAYOUT */
+        .page {
+            max-width: 1100px;
+            width: 100%;
+            margin: 40px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 240px 1fr;
+            gap: 32px;
+            flex: 1;
+        }
+
+        /* NAVIGATION */
+        nav {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow: var(--shadow-md);
+            align-self: start;
+            position: sticky;
+            top: 100px;
+        }
+
+        nav h2 {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 12px;
+            color: var(--muted);
+            font-weight: 700;
+        }
+
+        nav ul {
+            list-style: none;
+        }
+
+        nav a {
+            display: flex;
+            align-items: center;
+            padding: 10px 14px;
+            margin-bottom: 4px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text);
+            border-radius: var(--radius-md);
+            transition: all 0.2s ease;
+        }
+
+        nav a:hover {
+            background: var(--border);
+        }
+
+        nav a.active {
+            background: var(--primary);
+            color: #ffffff;
+            font-weight: 600;
+            box-shadow: var(--shadow-sm);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            nav a.active {
+                color: #0f172a;
+            }
+        }
+
+        /* MAIN CONTENT */
+        main {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow: var(--shadow-md);
+        }
+
+        main h2 {
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            letter-spacing: -0.02em;
+        }
+
+        main p {
+            font-size: 15px;
+            color: var(--text);
+            opacity: 0.9;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 999px;
+            background: var(--primary-light);
+            color: var(--primary);
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* TIMELINE CHANGELOG */
+        .section {
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+        }
+
+        .section h3 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 24px;
+        }
+
+        .changelog-timeline {
+            position: relative;
+            list-style: none;
+            padding-left: 20px;
+        }
+
+        .changelog-timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 8px;
+            bottom: 8px;
+            width: 2px;
+            background: var(--border);
+            border-radius: 2px;
+        }
+
+        .changelog-item {
+            position: relative;
+            margin-bottom: 20px;
+            padding: 14px 18px;
+            background: var(--card-hover);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .changelog-item::before {
+            content: '';
+            position: absolute;
+            left: -26px;
+            top: 18px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--primary);
+            border: 2px solid var(--bg);
+        }
+
+        .changelog-item:hover {
+            transform: translateX(4px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .changelog-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 6px;
+        }
+
+        .version-tag {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 6px;
+            background: var(--primary);
+            color: #ffffff;
+            font-size: 12px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .version-tag {
+                color: #0f172a;
+            }
+        }
+
+        .changelog-text {
+            font-size: 14px;
+            line-height: 1.5;
+            color: var(--text);
+        }
+
+        /* FOOTER */
+        footer {
+            text-align: center;
+            font-size: 13px;
+            color: var(--muted);
+            padding: 24px 20px;
+            margin-top: auto;
+            border-top: 1px solid var(--border);
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        /* RESPONSIVE DESIGN */
+        @media (max-width: 768px) {
+            .page {
+                grid-template-columns: 1fr;
+                margin: 20px auto;
+            }
+
+            nav {
+                position: static;
+            }
+
+            header {
+                padding: 14px 20px;
+            }
+
+            main {
+                padding: 24px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="header-brand">
+            <img src="logo2.png" alt="Logo LorenzoOS" onerror="this.src='https://via.placeholder.com/44'">
+            <div>
+                <h1>LorenzoOS</h1>
+                <p>Changelog & Storico Versioni</p>
+            </div>
+        </div>
+        <a href="index.html" class="back-portal">← Portale</a>
+    </header>
+
+    <div class="page">
+        <nav>
+            <h2>Navigazione</h2>
+            <ul>
+                <li><a href="main2.html">Home page</a></li>
+                <li><a href="download2.html">Download ISO</a></li>
+                <li><a href="changelog2.html" class="active">Changelog</a></li>
+            </ul>
+        </nav>
+
+        <main>
+            <span class="badge">Cronologia Rilasci</span>
+            <h2>Registro aggiornamenti</h2>
+            <p>Qui vengono pubblicate tutte le modifiche, le nuove funzionalità e lo storico delle versioni di LorenzoOS.</p>
+
+            <div class="section">
+                <h3>Storico Versioni</h3>
+                <ul class="changelog-timeline">
+                    <li class="changelog-item">
+                        <div class="changelog-header">
+                            <span class="version-tag">v4.0</span>
+                        </div>
+                        <p class="changelog-text">Introduzione dell'utility Sticky Notes per appunti rapidi sul desktop.</p>
+                    </li>
+
+                    <li class="changelog-item">
+                        <div class="changelog-header">
+                            <span class="version-tag">v3.0</span>
+                        </div>
+                        <p class="changelog-text">Aggiunti Colorizer, App Manager e avviso di disconnessione in stile Windows 3.x.</p>
+                    </li>
+
+                    <li class="changelog-item">
+                        <div class="changelog-header">
+                            <span class="version-tag">v2.0</span>
+                        </div>
+                        <p class="changelog-text">Introduzione del comando Esegui, schermata di errore BSOD e disabilitazione della CLI di default.</p>
+                    </li>
+
+                    <li class="changelog-item">
+                        <div class="changelog-header">
+                            <span class="version-tag">v1.9</span>
+                        </div>
+                        <p class="changelog-text">Implementazione del supporto multi-utente.</p>
+                    </li>
+
+                    <li class="changelog-item">
+                        <div class="changelog-header">
+                            <span class="version-tag">v1.8</span>
+                        </div>
+                        <p class="changelog-text">Integrazione del Terminale CLI.</p>
+                    </li>
+
+                    <li class="changelog-item">
+                        <div class="changelog-header">
+                            <span class="version-tag">v1.7</span>
+                        </div>
+                        <p class="changelog-text">Nuove personalizzazioni cromatiche del sistema.</p>
+                    </li>
+
+                    <li class="changelog-item">
+                        <div class="changelog-header">
+                            <span class="version-tag">v1.6.5</span>
+                        </div>
+                        <p class="changelog-text">Aggiunto il gioco Tris.</p>
+                    </li>
+
+                    <li class="changelog-item">
+                        <div class="changelog-header">
+                            <span class="version-tag">v1.6</span>
+                        </div>
+                        <p class="changelog-text">Nuova applicazione Orologio.</p>
+                    </li>
+
+                    <li class="changelog-item">
+                        <div class="changelog-header">
+                            <span class="version-tag">v1.5</span>
+                        </div>
+                        <p class="changelog-text">Aggiunta dell'utility Winver per le informazioni di sistema.</p>
+                    </li>
+
+                    <li class="changelog-item">
+                        <div class="changelog-header">
+                            <span class="version-tag">v1.4</span>
+                        </div>
+                        <p class="changelog-text">Introduzione del Task Manager per la gestione dei processi.</p>
+                    </li>
+
+                    <li class="changelog-item">
+                        <div class="changelog-header">
+                            <span class="version-tag">v1.3.1</span>
+                        </div>
+                        <p class="changelog-text">Integrazione del classico gioco Snake.</p>
+                    </li>
+
+                    <li class="changelog-item">
+                        <div class="changelog-header">
+                            <span class="version-tag">v1.0</span>
+                        </div>
+                        <p class="changelog-text">Rilascio iniziale con desktop personalizzabile, orologio RTC, blocco note, calcolatrice, impostazioni, screensaver, schermata di login e menu applicazioni.</p>
+                    </li>
+                </ul>
+            </div>
+        </main>
+    </div>
+
+    <footer>
+        © 2026 · LorenzoOS · LoreTnani
+    </footer>
+
+</body>
+</html>
